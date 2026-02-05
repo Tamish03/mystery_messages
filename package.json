@@ -2,6 +2,22 @@
   "name": "mystery_messages",
   "version": "0.1.0",
   "private": true,
+  "description": "**Mystery Messages** is a modern, full-stack anonymous feedback platform built with **Next.js 15**, **MongoDB**, and **TypeScript**. It allows users to create a unique profile link where others can send them anonymous messages. Admins have a dedicated dashboard to manage their messages and toggle their availability for receiving feedback.",
+  "homepage": "https://github.com/Tamish03/mystery_messages#readme",
+  "bugs": {
+    "url": "https://github.com/Tamish03/mystery_messages/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tamish03/mystery_messages.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -20,8 +36,8 @@
     "mongoose": "^9.1.3",
     "next": "16.1.1",
     "next-auth": "^4.24.13",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-email": "^5.2.2",
     "react-hook-form": "^7.71.1",
     "react-hot-toast": "^2.6.0",
@@ -34,8 +50,8 @@
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
