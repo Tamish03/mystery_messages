@@ -2,13 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react'; // Add this import
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Shield, Zap, Ghost, LayoutDashboard } from 'lucide-react';
 
 export default function Home() {
-  const { data: session } = useSession(); // Get the current session
+  const { data: session } = useSession(); 
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black transition-colors duration-500">
@@ -21,7 +21,7 @@ export default function Home() {
           <span className="text-xl font-bold tracking-tighter">MysteryMessages</span>
         </div>
         <div className="flex gap-4">
-          {/* Change buttons based on session status */}
+         
           {!session ? (
             <>
               <Link href="/sign-in">
@@ -82,7 +82,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ... Rest of your features grid remains exactly the same ... */}
+        
       </main>
 
       <footer className="py-12 border-t border-zinc-200 dark:border-zinc-800 text-center text-zinc-500 text-sm">

@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { verifySchema } from '@/schemas/verifySchema'; //
-import { ApiResponse } from '@/types/ApiResponse'; //
+import { verifySchema } from '@/schemas/verifySchema'; 
+import { ApiResponse } from '@/types/ApiResponse'; 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
 import { useParams, useRouter } from 'next/navigation';

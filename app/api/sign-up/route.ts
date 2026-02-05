@@ -37,7 +37,7 @@ export async function POST (req:Request,res:Response){
 
         const hashedPassword = await bcrypt.hash(password, 10);
         if(existingUserByEmail){
-            if(existingUserByEmail.isverified){
+            if(existingUserByEmail.isVerified){
                 return Response.json({
                     success:false,
                     message:"Email is already registered and verified"

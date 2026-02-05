@@ -11,8 +11,8 @@ import { Loader2, Ghost } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { signUpSchema } from '@/schemas/signUpSchema'; //
-import { ApiResponse } from '@/types/ApiResponse'; //
+import { signUpSchema } from '@/schemas/signUpSchema'; 
+import { ApiResponse } from '@/types/ApiResponse'; 
 
 export default function SignUpForm() {
   const [username, setUsername] = useState('');

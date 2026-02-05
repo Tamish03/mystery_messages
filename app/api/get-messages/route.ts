@@ -14,7 +14,7 @@ export async function GET(request: Request) {
         return Response.json({ success: false, message: "Not Authenticated" }, { status: 401 });
     }
 
-    // Convert string ID to MongoDB ObjectId for the aggregation pipeline
+    
     const userId = new mongoose.Types.ObjectId(_user._id);
 
     try {

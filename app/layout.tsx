@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
-import Navbar from "@/components/Navbar"; // New Import
-import { Toaster } from "react-hot-toast"; // Install with: npm i react-hot-toast
+import Navbar from "@/components/Navbar"; 
+import { Toaster } from "react-hot-toast"; 
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });

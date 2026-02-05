@@ -7,8 +7,7 @@ export async function middleware(req:NextRequest){
     const url = req.nextUrl;
 
     const authPaths= ["/sign-in","/signup","/verify","/"];
-    //“Now that middleware is running, how should I treat this route?”
-
+    
     if(authPaths.includes(url.pathname) && !token){
         return NextResponse.redirect(new URL("/sign-in",url));
     }
@@ -19,7 +18,6 @@ if(token && (url.pathname === "/sign-in" || url.pathname === "/signup" || url.pa
 return NextResponse.next();
 }
 
-//It tells Next.js which routes should run this middleware.
 export const config = {
     matcher:[
         "/","/sign-in","/signup",
