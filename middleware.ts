@@ -1,27 +1,41 @@
-import {getToken} from  "next-auth/jwt";
-import {NextResponse,NextRequest} from "next/server";
-export { default } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function middleware(req:NextRequest){
-    const token = await getToken({req,secret:process.env.NEXTAUTH_SECRET});
-    const url = req.nextUrl;
+export async function middleware(req: NextRequest) {
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-    const authPaths= ["/sign-in","/signup","/verify","/"];
-    
-    if(authPaths.includes(url.pathname) && !token){
-        return NextResponse.redirect(new URL("/sign-in",url));
-    }
+  const { pathname } = req.nextUrl;
 
-if(token && (url.pathname === "/sign-in" || url.pathname === "/signup" || url.pathname === "/")){
-    return NextResponse.redirect(new URL("/dashboard",url));
-}
-return NextResponse.next();
+  const authPaths = ["/", "/sign-in", "/signup", "/verify"];
+
+  // Not logged in → redirect to sign-in
+  if (!token && authPaths.includes(pathname)) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+
+  // Logged in → block auth pages
+  if (
+    token &&
+    (pathname === "/" ||
+      pathname === "/sign-in" ||
+      pathname === "/signup")
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher:[
-        "/","/sign-in","/signup",
-        "/dashboard/:path*",
-        "/verify/:path*"
-    ]
+  matcher: [
+    "/",
+    "/sign-in",
+    "/signup",
+    "/verify/:path*",
+    "/dashboard/:path*",
+  ],
 };

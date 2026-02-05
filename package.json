@@ -2,28 +2,15 @@
   "name": "mystery_messages",
   "version": "0.1.0",
   "private": true,
-  "description": "**Mystery Messages** is a modern, full-stack anonymous feedback platform built with **Next.js 15**, **MongoDB**, and **TypeScript**. It allows users to create a unique profile link where others can send them anonymous messages. Admins have a dedicated dashboard to manage their messages and toggle their availability for receiving feedback.",
-  "homepage": "https://github.com/Tamish03/mystery_messages#readme",
-  "bugs": {
-    "url": "https://github.com/Tamish03/mystery_messages/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Tamish03/mystery_messages.git"
-  },
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "type": "module",
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
+
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-slot": "^1.2.4",
@@ -46,6 +33,7 @@
     "usehooks-ts": "^3.1.1",
     "zod": "^4.3.6"
   },
+
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
