@@ -177,20 +177,20 @@ export const authOptions: NextAuthOptions = {
     // Session returned to client
 
 
-    callbacks: {
+   callbacks: {
         async jwt({ token, user }) {
             if (user) {
                 token._id = user._id?.toString();
-                token.isverified = user.isverifed;
+                token.isVerified = user.isVerified; // Fixed typo
                 token.isAcceptingMessages = user.isAcceptingMessages;
                 token.username = user.username;
             }
-            return token
+            return token;
         },
         async session({ session, token }) {
             if (token) {
                 session.user._id = token._id;
-                session.user.isverifed = token.isverified;
+                session.user.isVerifed = token.isVerified;
                 session.user.isAcceptingMessages = token.isAcceptingMessages;
                 session.user.username = token.username;
             }
@@ -199,7 +199,7 @@ export const authOptions: NextAuthOptions = {
 
     },
     pages: {
-        signIn: "/login"
+       signIn: "/sign-in",
 
     },
     session: {
