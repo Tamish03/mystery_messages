@@ -3,7 +3,7 @@ import UserModel from "@/model/userModel";
 import { usernameValidation } from "@/schemas/signUpSchema";
 import { z } from "zod";
 
-const UsernmaeQuerySchema = z.object({
+const UsernameQuerySchema = z.object({
   username: usernameValidation,
 });
 
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const queryParam = { username: searchParams.get("username") };
 
     // validation with zod
-    const result = UsernmaeQuerySchema.safeParse(queryParam);
+    const result = UsernameQuerySchema.safeParse(queryParam);
     console.log("🚀 ~ GET ~ result:", result);
 
     if (!result.success) {

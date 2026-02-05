@@ -25,7 +25,7 @@
        password:string;
        verifyToken:string;
        verifyTokenExpiry:Date;
-       isverified?:boolean;
+       isVerified?:boolean;
        isAcceptingMessages:boolean;
        messages:Message[];
      }
@@ -55,7 +55,7 @@
             type:Date,
             required:[true,"verifyTokenExpiry is required"],
         },
-        isverified:{
+        isVerified:{
             type:Boolean,
             default:false,
         },
