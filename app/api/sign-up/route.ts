@@ -23,8 +23,8 @@ export async function POST (req:Request,res:Response){
     await dbConnect();
     try{
         const {username, email, password} = await req.json();
-        const existingUserVerifiedBhyUsername = await userModel.findOne({username, isverified:true});
-        if(existingUserVerifiedBhyUsername){
+        const existingUserVerifiedByUsername = await userModel.findOne({username, isverified:true});
+        if(existingUserVerifiedByUsername){
             return Response.json({
                 success:false,
                 message:"Username is already taken"
