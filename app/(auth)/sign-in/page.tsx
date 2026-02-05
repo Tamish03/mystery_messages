@@ -26,8 +26,7 @@ export default function SignInPage() {
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
-    setAuthError(null); // Reset error state
-    
+    setAuthError(null); 
     const result = await signIn('credentials', {
       redirect: false,
       email: data.email,
@@ -59,7 +58,7 @@ export default function SignInPage() {
           <p className="mb-4 text-zinc-500">Sign in to manage your mystery messages</p>
         </div>
 
-        {/* Global Auth Error Display */}
+        
         {authError && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
             <AlertCircle className="w-4 h-4" />
