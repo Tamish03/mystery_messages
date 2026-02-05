@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ApiResponse } from '@/types/ApiResponse';
 import { Loader2, Send } from 'lucide-react';
@@ -64,7 +65,9 @@ export default function SendMessage() {
       
       <div className="mt-8 text-center">
         <p className="text-zinc-500 text-sm">Want your own message board?</p>
-        <Button variant="link" className="mt-2">Create Your Account</Button>
+        <Link href="/sign-up">
+          <Button variant="link" className="mt-2">Create Your Account</Button>
+        </Link>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from './ui/button';
-import { Ghost, LogOut, LayoutDashboard, User as UserIcon } from 'lucide-react';
+import { Ghost, LogOut, LayoutDashboard } from 'lucide-react';
 
 export default function Navbar() {
   const { data: session } = useSession();

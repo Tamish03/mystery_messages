@@ -1,93 +1,202 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Shield, Zap, Ghost, LayoutDashboard } from 'lucide-react';
+import { Loader2, RefreshCw, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-export default function Home() {
-  const { data: session } = useSession(); 
+type Message = {
+  _id: string;
+  content: string;
+  createdAt: string;
+};
+
+export default function DashboardPage() {
+  const { data: session } = useSession();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isAcceptingMessages, setIsAcceptingMessages] = useState(true);
+  const [isTogglingAccept, setIsTogglingAccept] = useState(false);
+
+  const username = session?.user?.username;
+  const profileLink = useMemo(
+    () => (username ? `/u/${username}` : null),
+    [username]
+  );
+
+  const loadMessages = async (showToast = false) => {
+    try {
+      if (showToast) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+      const res = await fetch('/api/get-messages');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to fetch messages');
+      }
+      setMessages(Array.isArray(data.messages) ? data.messages : []);
+      if (showToast) toast.success('Messages refreshed');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to fetch messages';
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  const loadAcceptingStatus = async () => {
+    try {
+      const res = await fetch('/api/accept-messages');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to fetch status');
+      }
+      setIsAcceptingMessages(Boolean(data.isAcceptingMessages));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to fetch status';
+      toast.error(message);
+    }
+  };
+
+  const toggleAccepting = async () => {
+    try {
+      setIsTogglingAccept(true);
+      const res = await fetch('/api/accept-messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acceptMessages: !isAcceptingMessages }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to update setting');
+      }
+      setIsAcceptingMessages(Boolean(data.updatedUser?.isAcceptingMessages));
+      toast.success('Message setting updated');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update setting';
+      toast.error(message);
+    } finally {
+      setIsTogglingAccept(false);
+    }
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    try {
+      const res = await fetch(`/api/delete-message/${messageId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to delete message');
+      }
+      setMessages((prev) => prev.filter((m) => m._id !== messageId));
+      toast.success('Message deleted');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete message';
+      toast.error(message);
+    }
+  };
+
+  useEffect(() => {
+    loadAcceptingStatus();
+    loadMessages();
+  }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black transition-colors duration-500">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between px-6 py-4 backdrop-blur-md sticky top-0 z-50 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-2">
-          <div className="bg-purple-600 p-2 rounded-lg">
-            <Ghost className="text-white w-6 h-6" />
+    <div className="min-h-screen bg-zinc-50 dark:bg-black">
+      <div className="container mx-auto max-w-5xl px-6 py-10 space-y-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Your Dashboard</h1>
+            <p className="text-zinc-500">Manage your anonymous inbox and profile link.</p>
           </div>
-          <span className="text-xl font-bold tracking-tighter">MysteryMessages</span>
-        </div>
-        <div className="flex gap-4">
-         
-          {!session ? (
-            <>
-              <Link href="/sign-in">
-                <Button variant="ghost">Login</Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {profileLink ? (
+              <Link href={profileLink}>
+                <Button variant="outline">View Public Link</Button>
               </Link>
-              <Link href="/sign-up">
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
-              </Link>
-            </>
-          ) : (
-            <Link href="/dashboard">
-              <Button variant="outline">
-                <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+            ) : (
+              <Button variant="outline" disabled>
+                Public Link Unavailable
               </Button>
-            </Link>
-          )}
-        </div>
-      </nav>
-
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="py-20 px-6 text-center lg:py-32">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <h1 className="text-5xl font-extrabold tracking-tight lg:text-7xl">
-              Dive into the World of{' '}
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                Anonymous Feedback
-              </span>
-            </h1>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Mystery Messages is the ultimate platform for honest, unfiltered conversations. 
-              Share your link, receive anonymous messages, and manage your identity with ease.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              {/* Session-aware Hero Buttons */}
-              {!session ? (
-                <>
-                  <Link href="/sign-up">
-                    <Button size="lg" className="h-14 px-10 text-lg bg-purple-600 hover:bg-purple-700 text-white shadow-xl shadow-purple-500/20">
-                      Create Your Link
-                    </Button>
-                  </Link>
-                  <Link href="/sign-in">
-                    <Button size="lg" variant="outline" className="h-14 px-10 text-lg border-zinc-200 dark:border-zinc-800">
-                      View Your Messages
-                    </Button>
-                  </Link>
-                </>
+            )}
+            <Button onClick={() => loadMessages(true)} disabled={isRefreshing}>
+              {isRefreshing ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Refreshing</>
               ) : (
-                <Link href="/dashboard">
-                  <Button size="lg" className="h-14 px-10 text-lg bg-purple-600 hover:bg-purple-700 text-white">
-                    Proceed to Dashboard
-                  </Button>
-                </Link>
+                <><RefreshCw className="mr-2 h-4 w-4" /> Refresh</>
               )}
-            </div>
+            </Button>
           </div>
-        </section>
+        </div>
 
-        
-      </main>
+        <Card>
+          <CardHeader>
+            <CardTitle>Accepting New Messages</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between gap-4">
+            <p className="text-sm text-zinc-500">
+              {isAcceptingMessages
+                ? 'You are currently accepting anonymous messages.'
+                : 'You have paused new messages.'}
+            </p>
+            <Button onClick={toggleAccepting} disabled={isTogglingAccept}>
+              {isTogglingAccept ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating</>
+              ) : (
+                isAcceptingMessages ? 'Pause Messages' : 'Accept Messages'
+              )}
+            </Button>
+          </CardContent>
+        </Card>
 
-      <footer className="py-12 border-t border-zinc-200 dark:border-zinc-800 text-center text-zinc-500 text-sm">
-        <p>© {new Date().getFullYear()} Mystery Messages. Built with passion for honest conversations.</p>
-      </footer>
+        <Card>
+          <CardHeader>
+            <CardTitle>Inbox</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="flex items-center gap-2 text-zinc-500">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading messages...
+              </div>
+            ) : messages.length === 0 ? (
+              <p className="text-zinc-500">No messages yet.</p>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message._id}
+                    className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-sm text-zinc-400">
+                          {new Date(message.createdAt).toLocaleString()}
+                        </p>
+                        <p className="mt-2 text-base text-zinc-800 dark:text-zinc-100">
+                          {message.content}
+                        </p>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteMessage(message._id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

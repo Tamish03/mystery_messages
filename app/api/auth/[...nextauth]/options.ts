@@ -1,9 +1,14 @@
-import { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, User as NextAuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/model/userModel";
 
+type Credentials = {
+    username?: string;
+    email?: string;
+    password?: string;
+};
 
 // User opens Login Page
 //         ↓
@@ -81,9 +86,12 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "text", placeholder: "Enter your email" },
                 password: { label: "Password", type: "password", placeholder: "Enter your password" }
             },
-            async authorize(credentials: any): Promise<any> {
+            async authorize(credentials?: Credentials): Promise<NextAuthUser | null> {
                 await dbConnect();
                 try {
+                    if (!credentials?.email && !credentials?.username) {
+                        return null;
+                    }
                     const user = await userModel.findOne({
                         $or: [
                             { email: credentials?.email },
@@ -99,7 +107,14 @@ export const authOptions: NextAuthOptions = {
                     }
                     const isPasswordValid = await bcrypt.compare(credentials?.password || "", user.password);
                     if (isPasswordValid) {
-                        return user;
+                        return {
+                            id: user._id?.toString(),
+                            _id: user._id?.toString(),
+                            email: user.email,
+                            username: user.username,
+                            isVerified: user.isVerified,
+                            isAcceptingMessages: user.isAcceptingMessages,
+                        };
                     }
                     return null;
                 } catch (error) {
@@ -190,7 +205,7 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (token) {
                 session.user._id = token._id;
-                session.user.isVerifed = token.isVerified;
+                session.user.isVerified = token.isVerified;
                 session.user.isAcceptingMessages = token.isAcceptingMessages;
                 session.user.username = token.username;
             }

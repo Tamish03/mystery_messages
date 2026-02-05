@@ -19,9 +19,10 @@ export default function VerifyAccount() {
 
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
+      const cleanedToken = data.verifyToken.replace(/\s+/g, '').trim();
       const response = await axios.post<ApiResponse>(`/api/verify-code`, {
         username: params.username,
-        code: data.verifyToken,
+        verifyToken: cleanedToken,
       });
 
       alert(response.data.message);

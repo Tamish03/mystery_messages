@@ -60,7 +60,7 @@ export default function SignUpForm() {
     try {
       const response = await axios.post<ApiResponse>('/api/sign-up', data);
       alert(response.data.message);
-      router.replace(`/verify/${username}`);
+      router.replace(`/verify/${data.username}`);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       alert(axiosError.response?.data.message ?? 'Registration failed');
@@ -96,7 +96,7 @@ export default function SignUpForm() {
             />
             {isCheckingUsername && <Loader2 className="animate-spin w-4 h-4 mt-1" />}
             {!isCheckingUsername && usernameMessage && (
-              <p className={`text-sm mt-1 ${usernameMessage === 'Username is unique' ? 'text-green-500' : 'text-red-500'}`}>
+              <p className={`text-sm mt-1 ${usernameMessage === 'Username is available' ? 'text-green-500' : 'text-red-500'}`}>
                 {usernameMessage}
               </p>
             )}
@@ -117,7 +117,7 @@ export default function SignUpForm() {
             <input
               type="password"
               className="w-full p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-purple-500 outline-none"
-              placeholder="••••••••"
+              placeholder="********"
               {...form.register('password')}
             />
           </div>
@@ -143,3 +143,5 @@ export default function SignUpForm() {
     </div>
   );
 }
+
+

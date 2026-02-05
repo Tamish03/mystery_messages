@@ -49,11 +49,11 @@
         },
         verifyToken:{
             type:String,
-            required:[true,"verifyToken is required"],
+            default:"",
         },
         verifyTokenExpiry:{
             type:Date,
-            required:[true,"verifyTokenExpiry is required"],
+            default:new Date(0),
         },
         isVerified:{
             type:Boolean,
